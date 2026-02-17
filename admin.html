@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR코드 생성기 - 관리자</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notice-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .notice-preview h3 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .notice-preview p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+        
+        .qr-container {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+        }
+        
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .url-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            word-break: break-all;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .instructions h3 {
+            font-size: 16px;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .header, .button-group, .instructions, .url-display {
+                display: none;
+            }
+            
+            .section {
+                background: white;
+            }
+        }
+    </style>
+    <!-- QR코드 생성 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 QR코드 생성기</h1>
+            <p>안전공지 QR코드 관리 시스템</p>
+        </div>
+        
+        <div class="content">
+            <!-- 공고문 미리보기 -->
+            <div class="section">
+                <h2>📝 공고문 내용</h2>
+                <div class="notice-preview">
+                    <h3>🇰🇷 한국어</h3>
+                    <p>연휴기간 동안 식당은 제2식당을 이용하세요</p>
+                </div>
+                <div class="notice-preview">
+                    <h3>🇻🇳 베트남어 (Tiếng Việt)</h3>
+                    <p>Trong thời gian nghỉ lễ, vui lòng sử dụng nhà ăn số 2</p>
+                </div>
+                <div class="notice-preview">
+                    <h3>🇹🇭 태국어 (ภาษาไทย)</h3>
+                    <p>ในช่วงวันหยุดยาว กรุณาใช้โรงอาหารที่ 2</p>
+                </div>
+            </div>
+            
+            <!-- QR코드 -->
+            <div class="section">
+                <h2>📱 QR코드</h2>
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                    <div class="url-display" id="urlDisplay">QR코드를 생성하려면 아래 버튼을 클릭하세요</div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="generateQR()">
+                            ⚡ QR코드 생성
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadQR()">
+                            💾 QR코드 다운로드
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.print()">
+                            🖨️ 인쇄하기
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h3>📌 사용 방법</h3>
+                    <ol>
+                        <li><strong>'QR코드 생성'</strong> 버튼을 클릭하세요</li>
+                        <li><strong>'QR코드 다운로드'</strong> 또는 <strong>'인쇄하기'</strong>를 선택하세요</li>
+                        <li>인쇄된 QR코드를 공고문에 부착하세요</li>
+                        <li>작업자가 핸드폰으로 QR코드를 스캔하면 자동으로 번역 페이지로 이동합니다</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let qrCodeInstance = null;
+        
+        // QR코드 생성 함수
+        function generateQR() {
+            // 이전 QR코드 삭제
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            
+            // notice.html 파일의 URL (실제 사용시 여기를 수정하세요)
+            // 예: 'https://your-domain.com/notice.html'
+            // 로컬 테스트용: 'file:///경로/notice.html'
+            const noticeURL = window.location.href.replace('admin.html', 'notice.html');
+            
+            // QR코드 생성
+            qrCodeInstance = new QRCode(qrcodeDiv, {
+                text: noticeURL,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            // URL 표시
+            document.getElementById('urlDisplay').innerHTML = 
+                '<strong>생성된 링크:</strong><br>' + noticeURL;
+            
+            alert('✅ QR코드가 생성되었습니다!');
+        }
+        
+        // QR코드 다운로드 함수
+        function downloadQR() {
+            const qrcodeDiv = document.getElementById('qrcode');
+            const canvas = qrcodeDiv.querySelector('canvas');
+            
+            if (!canvas) {
+                alert('⚠️ 먼저 QR코드를 생성해주세요!');
+                return;
+            }
+            
+            // Canvas를 이미지로 변환
+            const image = canvas.toDataURL("image/png");
+            
+            // 다운로드 링크 생성
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = '식당공지_QR코드.png';
+            link.click();
+            
+            alert('✅ QR코드가 다운로드되었습니다!');
+        }
+        
+        // 페이지 로드시 자동 생성 (선택사항)
+        window.onload = function() {
+            // 자동으로 QR코드 생성하려면 아래 주석을 해제하세요
+            // generateQR();
+        };
+    </script>
+</body>
+</html>
